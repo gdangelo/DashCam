@@ -1,37 +1,67 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
+  Alert,
+  AppRegistry,
+  Button,
   Platform,
   StyleSheet,
   Text,
   View
 } from 'react-native';
+import Auth0 from 'react-native-auth0';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+var credentials = require('./app/auth0-credentials');
+const auth0 = new Auth0(credentials);
 
-export default class App extends Component<{}> {
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { accessToken: null };
+  }
+
+  _onLogin = () => {
+    auth0.webAuth
+      .authorize({
+        scope: 'openid profile',
+        audience: 'https://' + credentials.domain + '/userinfo'
+      })
+      .then(credentials => {
+        Alert.alert(
+          'Success',
+          'AccessToken: ' + credentials.accessToken,
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+          { cancelable: false }
+        );
+        this.setState({ accessToken: credentials.accessToken });
+      })
+      .catch(error => console.log(error));
+  };
+
+  _onLogout = () => {
+    if (Platform.OS === 'android') {
+      this.setState({ accessToken: null });
+    } else {
+      auth0.webAuth
+        .clearSession({})
+        .then(success => {
+          this.setState({ accessToken: null });
+        })
+        .catch(error => console.log(error));
+    }
+  };
+
   render() {
+    let loggedIn = this.state.accessToken === null ? false : true;
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
+        <Text style={styles.header}>Dashcam app for Autonomous Driving</Text>
+        <Text>
+          You are {loggedIn ? '' : 'not '}logged in.
         </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
+        <Button
+          onPress={loggedIn ? this._onLogout : this._onLogin}
+          title={loggedIn ? 'Log Out' : 'Log In'}
+        />
       </View>
     );
   }
@@ -42,16 +72,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    padding: 15,
+    backgroundColor: '#F5FCFF'
   },
-  welcome: {
+  header: {
     fontSize: 20,
     textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    margin: 10
+  }
 });
