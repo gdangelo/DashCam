@@ -7,7 +7,9 @@ import {
   FooterTab,
   Button,
   Icon,
-  Text
+  Text,
+  Title,
+  Body
 } from 'native-base';
 
 class Dashboard extends Component {
@@ -31,8 +33,14 @@ class Dashboard extends Component {
   render() {
     return (
       <Container>
-        <Header />
+        <Header>
+          <Body>
+            <Title>DashCam</Title>
+          </Body>
+        </Header>
+
         <Content padder />
+
         <Footer>
           <FooterTab>
             <Button active={this.state.tab1} onPress={() => this.toggleTab1()}>
