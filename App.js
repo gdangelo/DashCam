@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import {
-  Alert,
-  AppRegistry,
-  Button,
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { Platform } from 'react-native';
+import { Container, Content } from 'native-base';
+import { Login } from './app/components/Login';
+import { Dashboard } from './app/components/Dashboard';
+
 import Auth0 from 'react-native-auth0';
 
 var credentials = require('./app/auth0-credentials');
@@ -52,32 +48,17 @@ export default class App extends Component {
 
   render() {
     let loggedIn = this.state.accessToken === null ? false : true;
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Dashcam app for Autonomous Driving</Text>
-        <Text>
-          You are {loggedIn ? '' : 'not '}logged in.
-        </Text>
-        <Button
-          onPress={loggedIn ? this._onLogout : this._onLogin}
-          title={loggedIn ? 'Log Out' : 'Log In'}
-        />
-      </View>
+      <Container>
+        <Content padder>
+          {loggedIn ? (
+            <Dashboard />
+          ) : (
+            <Login onLogin={this._onLogin}/>
+          )}
+        </Content>
+      </Container>
     );
   }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
-    backgroundColor: '#F5FCFF'
-  },
-  header: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
-  }
-});
+};

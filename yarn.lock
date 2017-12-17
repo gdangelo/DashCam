@@ -3355,7 +3355,7 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
-react-native-auth0@^1.2.1:
+react-native-auth0@^1.1.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-auth0/-/react-native-auth0-1.2.1.tgz#73c488be44a3a00ebfd61a986deb7991dacf9aab"
   dependencies:
