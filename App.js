@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
-import { Container, Content } from 'native-base';
-import { Login } from './app/components/Login';
-import { Dashboard } from './app/components/Dashboard';
+import { Platform, Alert } from 'react-native';
+import { Container } from 'native-base';
+import Login from './app/screens/login';
+import Dashboard from './app/screens/dashboard';
 
 import Auth0 from 'react-native-auth0';
 
@@ -13,7 +13,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { accessToken: null };
-  }
+  };
 
   _onLogin = () => {
     auth0.webAuth
@@ -48,17 +48,10 @@ export default class App extends Component {
 
   render() {
     let loggedIn = this.state.accessToken === null ? false : true;
-
     return (
       <Container>
-        <Content padder>
-          {loggedIn ? (
-            <Dashboard />
-          ) : (
-            <Login onLogin={this._onLogin}/>
-          )}
-        </Content>
+        { loggedIn ? <Dashboard /> : <Login onLogin={this._onLogin}/> }
       </Container>
     );
-  }
+  };
 };
